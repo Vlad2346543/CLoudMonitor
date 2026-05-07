@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  USER
+  VIEWER
+}
+
+enum ResourceStatus {
+  ONLINE
+  OFFLINE
+  MAINTENANCE
+  UNKNOWN
+}
+
+enum ResourceType {
+  EC2
+  S3
+  RDS
+  LAMBDA
+  ECS
+  EKS
+  CLOUDFRONT
+  VPC
+  OTHER
+}
+
+enum AccessRole {
+  OWNER
+  EDITOR
+  VIEWER
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      UserRole @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  accesses Access[]
+  logs     Log[]
+}
+
+model Resource {
+  id          String         @id @default(uuid())
+  name        String
+  type        ResourceType
+  status      ResourceStatus @default(UNKNOWN)
+  region      String?
+  description String?
+  cpuUsage    Float?
+  ramUsage    Float?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  accesses Access[]
+}
+
+model Access {
+  id         String     @id @default(uuid())
+  userId     String
+  resourceId String
+  role       AccessRole @default(VIEWER)
+  grantedAt  DateTime   @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resource Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, resourceId])
+}
+
+model Log {
+  id        String   @id @default(uuid())
+  userId    String?
+  action    String
+  details   String?
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
