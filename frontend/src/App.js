@@ -12,7 +12,7 @@ import LogsPage from './pages/LogsPage';
 
 const ProtectedRoute = ({ children, adminOnly = false }) => {
   const { user, loading } = useAuth();
-  if (loading) return <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100vh', color:'#94a3b8', fontFamily:'DM Sans' }}>Loading...</div>;
+  if (loading) return <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100vh', color:'#94a3b8', fontFamily:'DM Sans' }}>Загрузка...</div>;
   if (!user) return <Navigate to="/login" replace />;
   if (adminOnly && user.role !== 'ADMIN') return <Navigate to="/dashboard" replace />;
   return children;

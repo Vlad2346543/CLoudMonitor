@@ -1,7 +1,7 @@
 :root {
-  --bg-primary: #0a0f1e;
-  --bg-secondary: #0f172a;
-  --bg-card: #141d2e;
+  --bg-primary: #000000;
+  /* --bg-secondary: #18182E; */
+  /* --bg-card: #141d2e; */
   --bg-card-hover: #1a2540;
   --border: #1e2d45;
   --border-light: #243352;
