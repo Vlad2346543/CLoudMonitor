@@ -1,26 +1,9 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback
-} from 'react';
-
-import {
-  PageHeader,
-  Table,
-  StatusBadge,
-  Button,
-  Modal,
-  Select,
-  FormField,
-  Loader,
-  Alert,
-  Card
-} from '../components/ui';
-
+import React, { useState, useEffect, useCallback } from 'react';
+import { PageHeader, Table, StatusBadge, Button, Modal, Select, FormField, Loader, Alert, Card } from '../components/ui';
 import api from '../services/api';
-
 import { useAuth } from '../context/AuthContext';
 
+import css from './UsersPage.module.css';
 const ROLES = [
   'ADMIN',
   'USER',

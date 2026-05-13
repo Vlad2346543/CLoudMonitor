@@ -1,0 +1,181 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(
+      ellipse at 20% 50%,
+      rgba(59,130,246,0.06) 0%,
+      transparent 60%
+    ),
+    #0a0f1e;
+  padding: 16px;
+}
+
+.backgroundGrid {
+  position: fixed;
+  inset: 0;
+  opacity: 0.03;
+  background-image:
+    linear-gradient(#3b82f6 1px, transparent 1px),
+    linear-gradient(90deg, #3b82f6 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+.loginCard {
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  background: #141d2e;
+  border: 1px solid #1e2d45;
+  border-radius: 14px;
+  padding: 40px 36px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.logoBlock {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.logoIcon {
+  font-size: 36px;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 0 12px #3b82f6);
+}
+
+.logoTitle {
+  font-family: 'Space Mono', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #e2e8f0;
+}
+
+.logoSubtitle {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.errorBox {
+  padding: 10px 14px;
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.3);
+  border-radius: 8px;
+  color: #ef4444;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  margin-bottom: 6px;
+  letter-spacing: 0.05em;
+}
+
+.input {
+  width: 100%;
+  padding: 11px 14px;
+  background: #0f172a;
+  border: 1px solid #1e2d45;
+  border-radius: 8px;
+  color: #e2e8f0;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.input:focus {
+  border-color: #3b82f6;
+}
+
+.submitButton {
+  margin-top: 4px;
+  padding: 12px;
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+}
+
+.submitButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.demoAccounts {
+  margin-top: 24px;
+  padding: 14px;
+  background: #0f172a;
+  border-radius: 8px;
+  border: 1px solid #1e2d45;
+}
+
+.demoTitle {
+  font-size: 11px;
+  color: #64748b;
+  font-family: 'Space Mono', monospace;
+  margin-bottom: 8px;
+}
+
+.demoItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.demoText {
+  font-size: 11px;
+  color: #475569;
+}
+
+.demoEmail {
+  color: #94a3b8;
+  font-family: 'Space Mono';
+  font-size: 10px;
+}
+
+.demoButton {
+  font-size: 10px;
+  padding: 2px 7px;
+  background: transparent;
+  border: 1px solid #1e2d45;
+  border-radius: 4px;
+  color: #3b82f6;
+  cursor: pointer;
+  font-family: 'DM Sans';
+}
+
+.registerText {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 13px;
+  color: #475569;
+}
+
+.registerLink {
+  color: #60a5fa;
+}

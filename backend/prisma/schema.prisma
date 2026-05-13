@@ -54,6 +54,12 @@ model User {
   logs     Log[]
 }
 
+enum Role {
+  ADMIN
+  USER
+  VIEWER
+}
+
 model Resource {
   id          String         @id @default(uuid())
   name        String

@@ -31,5 +31,104 @@
 .grantedAt {
   font-size: 11px;
   color: var(--text-muted);
-  fontFamily: 'var(--font-mono)';
+  font-family: var(--font-mono);
+}
+
+.resourceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.resourceCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.resourceCardActive {
+  background: var(--accent-glow);
+  border: 1px solid rgba(59,130,246,0.4);
+}
+
+.resourceCardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.resourceTitle {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.resourceCount {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.resourceInfo {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+.filterCard {
+  margin-bottom: 16px;
+}
+
+.filterBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.filterLabel {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.filterSelect {
+  width: 220px;
+}
+
+.filterCount {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.tableCard {
+  padding: 0;
+}
+
+.grantForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.roleInfo {
+  padding: 10px 14px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.roleInfoTitle {
+  color: var(--text-secondary);
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
 }

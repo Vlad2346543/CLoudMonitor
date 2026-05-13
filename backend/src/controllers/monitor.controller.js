@@ -1,10 +1,14 @@
-const prisma = require('../config/database');
+import prisma from '../config/database.js';
+import si from 'systeminformation';
+import * as monitorService from '../services/monitor.service.js';
+
 
 // Simulate real-time metric fluctuation
 const fluctuate = (base, range = 10) => {
   const delta = (Math.random() - 0.5) * range;
   return Math.min(100, Math.max(0, parseFloat((base + delta).toFixed(1))));
 };
+
 
 const getOverview = async (req, res, next) => {
   try {
@@ -33,23 +37,74 @@ const getOverview = async (req, res, next) => {
 };
 
 const getResourceMetrics = async (req, res, next) => {
+
   try {
+
     const resources = await prisma.resource.findMany({
       where: { status: 'ONLINE' },
-      select: { id: true, name: true, type: true, cpuUsage: true, ramUsage: true },
+      select: {
+        id: true,
+        name: true,
+        type: true,
+        cpuUsage: true,
+        ramUsage: true,
+      },
     });
 
-    const metrics = resources.map(r => ({
-      ...r,
-      cpuUsage: r.cpuUsage !== null ? fluctuate(r.cpuUsage, 8) : null,
-      ramUsage: r.ramUsage !== null ? fluctuate(r.ramUsage, 5) : null,
-      networkIn: parseFloat((Math.random() * 500).toFixed(1)),
-      networkOut: parseFloat((Math.random() * 200).toFixed(1)),
+    // Реальні системні дані
+    const cpu = await si.currentLoad();
+
+    const memory = await si.mem();
+
+    const network = await si.networkStats();
+
+    const realCpuUsage =
+      parseFloat(cpu.currentLoad.toFixed(1));
+
+    const realRamUsage =
+      parseFloat(
+        (
+          (memory.used / memory.total) * 100
+        ).toFixed(1)
+      );
+
+    const networkIn =
+      parseFloat(
+        ((network[0]?.rx_sec || 0) / 1024 / 1024)
+        .toFixed(2)
+      );
+
+    const networkOut =
+      parseFloat(
+        ((network[0]?.tx_sec || 0) / 1024 / 1024)
+        .toFixed(2)
+      );
+
+    const metrics = resources.map(resource => ({
+
+      ...resource,
+      // Реальні дані ПК
+      cpuUsage: realCpuUsage,
+
+      ramUsage: realRamUsage,
+
+      networkIn,
+
+      networkOut,
+
       timestamp: new Date().toISOString(),
     }));
 
     res.json(metrics);
-  } catch (err) { next(err); }
+
+  } catch (err) {
+
+    next(err);
+  }
 };
 
-module.exports = { getOverview, getResourceMetrics };
+export {
+  getOverview,
+  getResourceMetrics
+};
+

@@ -1,16 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-
-import {
-  PageHeader,
-  Table,
-  Loader,
-  Alert,
-  Card,
-  Button,
-  Input,
-  Select
-} from '../components/ui';
-
+import { PageHeader, Table, Loader, Alert, Card, Button, Input, Select} from '../components/ui';
+import css from './LogsPage.module.css';
 import api from '../services/api';
 
 const ACTION_COLORS = {
@@ -134,15 +124,10 @@ export default function LogsPage() {
 
     return (
       <span
+        className={css.actionBadge}
         style={{
-          padding: '2px 8px',
-          borderRadius: 4,
-          fontSize: 10,
-          fontFamily: 'var(--font-mono)',
-          fontWeight: 700,
           background: theme.bg,
           color: theme.color,
-          letterSpacing: '0.04em',
         }}
       >
         {action}
@@ -156,14 +141,7 @@ export default function LogsPage() {
       label: 'ЧАС',
 
       render: v => (
-        <span
-          style={{
-            fontSize: 11,
-            fontFamily: 'var(--font-mono)',
-            color: 'var(--text-muted)',
-            whiteSpace: 'nowrap',
-          }}
-        >
+        <span className={css.timeText}>
           {new Date(v).toLocaleString()}
         </span>
       ),
@@ -176,32 +154,16 @@ export default function LogsPage() {
       render: (v) =>
         v ? (
           <div>
-            <div
-              style={{
-                fontSize: 12,
-                fontWeight: 600,
-              }}
-            >
+            <div className={css.userName}>
               {v.name}
             </div>
 
-            <div
-              style={{
-                fontSize: 10,
-                color: 'var(--text-muted)',
-                fontFamily: 'var(--font-mono)',
-              }}
-            >
+            <div className={css.userEmail}>
               {v.email}
             </div>
           </div>
         ) : (
-          <span
-            style={{
-              color: 'var(--text-muted)',
-              fontSize: 11,
-            }}
-          >
+          <span className={css.systemText}>
             Система
           </span>
         ),
@@ -221,12 +183,7 @@ export default function LogsPage() {
       label: 'ДЕТАЛІ',
 
       render: v => (
-        <span
-          style={{
-            fontSize: 12,
-            color: 'var(--text-secondary)',
-          }}
-        >
+        <span className={css.detailsText}>
           {v || '—'}
         </span>
       ),
@@ -238,13 +195,7 @@ export default function LogsPage() {
 
       render: v =>
         v ? (
-          <span
-            style={{
-              fontSize: 11,
-              fontFamily: 'var(--font-mono)',
-              color: 'var(--text-muted)',
-            }}
-          >
+          <span className={css.ipText}>
             {v}
           </span>
         ) : '—',
@@ -263,247 +214,7 @@ export default function LogsPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Журнали аудиту"
-        subtitle={`${meta.total} записів`}
-        action={
-          <div
-            style={{
-              display: 'flex',
-              gap: 10,
-            }}
-          >
-            <button
-              onClick={() =>
-                setAutoRefresh(v => !v)
-              }
-              style={{
-                padding: '7px 14px',
-                borderRadius: 'var(--radius-sm)',
-                fontSize: 12,
-                cursor: 'pointer',
-
-                background: autoRefresh
-                  ? 'var(--green-dim)'
-                  : 'var(--bg-card)',
-
-                border: `1px solid ${
-                  autoRefresh
-                    ? 'rgba(16,185,129,0.4)'
-                    : 'var(--border)'
-                }`,
-
-                color: autoRefresh
-                  ? 'var(--green)'
-                  : 'var(--text-secondary)',
-
-                fontFamily: 'var(--font-sans)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-              }}
-            >
-              {autoRefresh
-                ? '⏸ Live режим'
-                : '▶ Автооновлення'}
-            </button>
-
-            <Button
-              variant="secondary"
-              onClick={fetchLogs}
-            >
-              ⟳ Оновити
-            </Button>
-          </div>
-        }
-      />
-
-      {error && (
-        <div style={{ marginBottom: 16 }}>
-          <Alert
-            type="error"
-            message={error}
-          />
-        </div>
-      )}
-
-      {/* Статистика дій */}
-      {actionStats.length > 0 && (
-        <div
-          style={{
-            display: 'flex',
-            gap: 10,
-            marginBottom: 20,
-            flexWrap: 'wrap',
-          }}
-        >
-          {actionStats.map(([action, count]) => {
-            const theme =
-              ACTION_COLORS[action] || {
-                bg: 'rgba(100,116,139,0.1)',
-                color: '#64748b',
-              };
-
-            return (
-              <button
-                key={action}
-                onClick={() =>
-                  setSearch(
-                    search === action ? '' : action
-                  )
-                }
-                style={{
-                  padding: '6px 12px',
-                  borderRadius:
-                    'var(--radius-sm)',
-
-                  border: `1px solid ${theme.color}30`,
-
-                  background:
-                    search === action
-                      ? theme.bg
-                      : 'var(--bg-card)',
-
-                  color: theme.color,
-
-                  cursor: 'pointer',
-                  fontSize: 11,
-                  fontFamily: 'var(--font-mono)',
-                  fontWeight: 700,
-
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                }}
-              >
-                {action}
-
-                <span
-                  style={{
-                    background: theme.bg,
-                    borderRadius: 10,
-                    padding: '1px 6px',
-                  }}
-                >
-                  {count}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Пошук */}
-      <Card style={{ marginBottom: 16 }}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 12,
-          }}
-        >
-          <span
-            style={{
-              fontSize: 12,
-              color: 'var(--text-muted)',
-              fontFamily: 'var(--font-mono)',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            ПОШУК ДІЇ:
-          </span>
-
-          <Input
-            value={search}
-            onChange={e => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-            placeholder="Наприклад LOGIN, RESOURCE..."
-            style={{ maxWidth: 280 }}
-          />
-
-          {search && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                setSearch('');
-                setPage(1);
-              }}
-            >
-              ✕ Очистити
-            </Button>
-          )}
-
-          <span
-            style={{
-              marginLeft: 'auto',
-              fontSize: 12,
-              color: 'var(--text-muted)',
-            }}
-          >
-            Показано {logs.length} з {meta.total}
-          </span>
-        </div>
-      </Card>
-
-      <Card style={{ padding: 0 }}>
-        {loading ? (
-          <Loader />
-        ) : (
-          <Table
-            columns={columns}
-            data={logs}
-            emptyMsg="Записів журналу не знайдено"
-          />
-        )}
-      </Card>
-
-      {/* Пагінація */}
-      {meta.pages > 1 && (
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: 10,
-            marginTop: 20,
-          }}
-        >
-          <Button
-            variant="secondary"
-            size="sm"
-            disabled={page === 1}
-            onClick={() =>
-              setPage(p => p - 1)
-            }
-          >
-            ← Назад
-          </Button>
-
-          <span
-            style={{
-              fontSize: 12,
-              color: 'var(--text-secondary)',
-              fontFamily: 'var(--font-mono)',
-            }}
-          >
-            Сторінка {page} з {meta.pages}
-          </span>
-
-          <Button
-            variant="secondary"
-            size="sm"
-            disabled={page === meta.pages}
-            onClick={() =>
-              setPage(p => p + 1)
-            }
-          >
-            Далі →
-          </Button>
-        </div>
-      )}
+      {/* твій JSX тут */}
     </div>
   );
 }

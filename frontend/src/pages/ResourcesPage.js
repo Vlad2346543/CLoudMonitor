@@ -1,28 +1,9 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback
-} from 'react';
-
+import React, { useState, useEffect, useCallback} from 'react';
 import { useAuth } from '../context/AuthContext';
-
-import {
-  PageHeader,
-  Button,
-  Modal,
-  FormField,
-  Input,
-  Select,
-  StatusBadge,
-  Table,
-  Loader,
-  Alert,
-  Card,
-  MetricBar
-} from '../components/ui';
-
+import { PageHeader, Button, Modal, FormField, Input, Select, StatusBadge, Table, Loader, Alert, Card, MetricBar} from '../components/ui';
 import api from '../services/api';
 
+import css from './ResourcesPage.module.css';
 const TYPES = [
   'EC2',
   'S3',
@@ -54,6 +35,9 @@ export default function ResourcesPage() {
   const { isViewer, isAdmin } = useAuth();
 
   const [resources, setResources] =
+    useState([]);
+
+  const [metrics, setMetrics] =
     useState([]);
 
   const [total, setTotal] = useState(0);
@@ -105,7 +89,34 @@ export default function ResourcesPage() {
           { params }
         );
 
-        setResources(res.data.resources);
+        const metricsRes =
+          await api.get(
+            '/monitor/metrics'
+          );
+
+        setMetrics(metricsRes.data);
+
+        const mergedResources =
+        res.data.resources.map(resource => {
+
+        const metric =
+            metricsRes.data.find(
+              m =>
+                m.name === resource.name
+            );
+
+          return {
+            ...resource,
+
+            cpuUsage:
+              metric?.cpuUsage ?? null,
+
+            ramUsage:
+              metric?.ramUsage ?? null,
+          };
+        });
+
+      setResources(mergedResources);
         setTotal(res.data.total);
       } catch {
         setError(
@@ -223,198 +234,128 @@ export default function ResourcesPage() {
 
   const columns = [
     {
-      key: 'name',
-      label: 'НАЗВА',
+  key: 'name',
+  label: 'НАЗВА',
 
-      render: (v, row) => (
-        <div>
-          <div
-            style={{
-              fontWeight: 600,
-              color:
-                'var(--text-primary)',
-            }}
-          >
-            {v}
-          </div>
+  render: (v, row) => (
+    <div>
+      <div className={css.resourceName}>
+        {v}
+      </div>
 
-          {row.description && (
-            <div
-              style={{
-                fontSize: 11,
-                color:
-                  'var(--text-muted)',
-
-                marginTop: 2,
-              }}
-            >
-              {row.description}
-            </div>
-          )}
+      {row.description && (
+        <div className={css.resourceDescription}>
+          {row.description}
         </div>
-      ),
-    },
+      )}
+    </div>
+  ),
+},
 
-    {
-      key: 'type',
-      label: 'ТИП',
+{
+  key: 'type',
+  label: 'ТИП',
 
-      render: v => (
-        <span
-          style={{
-            fontSize: 11,
-            padding: '2px 8px',
+  render: v => (
+    <span className={css.typeBadge}>
+      {v}
+    </span>
+  ),
+},
 
-            background:
-              'var(--bg-secondary)',
+{
+  key: 'status',
+  label: 'СТАТУС',
 
-            border:
-              '1px solid var(--border)',
+  render: v => (
+    <StatusBadge
+      status={v}
+      pulse={v === 'ONLINE'}
+    />
+  ),
+},
 
-            borderRadius: 4,
+{
+  key: 'region',
+  label: 'РЕГІОН',
 
-            fontFamily:
-              'var(--font-mono)',
+  render: v =>
+    v ? (
+      <span className={css.regionText}>
+        {v}
+      </span>
+    ) : '—',
+},
 
-            color:
-              'var(--text-secondary)',
-          }}
-        >
-          {v}
-        </span>
-      ),
-    },
+{
+  key: 'cpuUsage',
+  label: 'CPU / RAM',
 
-    {
-      key: 'status',
-      label: 'СТАТУС',
-
-      render: v => (
-        <StatusBadge
-          status={v}
-          pulse={v === 'ONLINE'}
+  render: (v, row) =>
+    row.cpuUsage !== null ? (
+      <div className={css.metricWrapper}>
+        <MetricBar
+          label="CPU"
+          value={row.cpuUsage}
         />
-      ),
-    },
 
-    {
-      key: 'region',
-      label: 'РЕГІОН',
+        <MetricBar
+          label="RAM"
+          value={row.ramUsage}
+          color="var(--purple)"
+        />
+      </div>
+    ) : (
+      <span className={css.noDataText}>
+        Н/Д
+      </span>
+    ),
+},
 
-      render: v =>
-        v ? (
-          <span
-            style={{
-              fontFamily:
-                'var(--font-mono)',
+{
+  key: '_count',
+  label: 'ДОСТУП',
 
-              fontSize: 11,
-              color:
-                'var(--text-muted)',
-            }}
-          >
-            {v}
-          </span>
-        ) : '—',
-    },
+  render: (v) => (
+    <span className={css.accessText}>
+      {v?.accesses ?? 0} користувачів
+    </span>
+  ),
+},
 
-    {
-      key: 'cpuUsage',
-      label: 'CPU / RAM',
+!isViewer && {
+  key: 'id',
+  label: 'ДІЇ',
 
-      render: (v, row) =>
-        row.cpuUsage !== null ? (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 4,
-              minWidth: 100,
-            }}
-          >
-            <MetricBar
-              label="CPU"
-              value={row.cpuUsage}
-            />
+  render: (id, row) => (
+    <div className={css.actions}>
+      <Button
+        size="sm"
+        variant="secondary"
+        onClick={() =>
+          openEdit(row)
+        }
+      >
+        Редагувати
+      </Button>
 
-            <MetricBar
-              label="RAM"
-              value={row.ramUsage}
-              color="var(--purple)"
-            />
-          </div>
-        ) : (
-          <span
-            style={{
-              color:
-                'var(--text-muted)',
-
-              fontSize: 11,
-            }}
-          >
-            Н/Д
-          </span>
-        ),
-    },
-
-    {
-      key: '_count',
-      label: 'ДОСТУП',
-
-      render: (v) => (
-        <span
-          style={{
-            fontFamily:
-              'var(--font-mono)',
-
-            fontSize: 12,
-            color:
-              'var(--text-secondary)',
-          }}
+      {isAdmin && (
+        <Button
+          size="sm"
+          variant="danger"
+          onClick={() =>
+            handleDelete(
+              id,
+              row.name
+            )
+          }
         >
-          {v?.accesses ?? 0} користувачів
-        </span>
-      ),
-    },
-
-    !isViewer && {
-      key: 'id',
-      label: 'ДІЇ',
-
-      render: (id, row) => (
-        <div
-          style={{
-            display: 'flex',
-            gap: 6,
-          }}
-        >
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={() =>
-              openEdit(row)
-            }
-          >
-            Редагувати
-          </Button>
-
-          {isAdmin && (
-            <Button
-              size="sm"
-              variant="danger"
-              onClick={() =>
-                handleDelete(
-                  id,
-                  row.name
-                )
-              }
-            >
-              Видалити
-            </Button>
-          )}
-        </div>
-      ),
-    },
+          Видалити
+        </Button>
+      )}
+    </div>
+  ),
+},
   ].filter(Boolean);
 
   return (
@@ -433,149 +374,107 @@ export default function ResourcesPage() {
         }
       />
 
-      {error && (
-        <div
-          style={{
-            marginBottom: 16,
-          }}
-        >
-          <Alert
-            type="error"
-            message={error}
-          />
-        </div>
-      )}
+     {error && (
+  <div className={css.alertWrapper}>
+    <Alert
+      type="error"
+      message={error}
+    />
+  </div>
+)}
 
-      {success && (
-        <div
-          style={{
-            marginBottom: 16,
-          }}
-        >
-          <Alert
-            type="success"
-            message={success}
-          />
-        </div>
-      )}
+{success && (
+  <div className={css.alertWrapper}>
+    <Alert
+      type="success"
+      message={success}
+    />
+  </div>
+)}
 
-      {/* Фільтри */}
-      <Card
-        style={{
-          marginBottom: 20,
+{/* Фільтри */}
+<Card
+  style={{
+    marginBottom: 20,
+  }}
+>
+  <div className={css.filters}>
+    <span className={css.filterLabel}>
+      ФІЛЬТР:
+    </span>
+
+    <Select
+      value={filterStatus}
+      onChange={e =>
+        setFilterStatus(
+          e.target.value
+        )
+      }
+      style={{ width: 140 }}
+    >
+      <option value="">
+        Усі статуси
+      </option>
+
+      {STATUSES.map(s => (
+        <option
+          key={s}
+          value={s}
+        >
+          {s}
+        </option>
+      ))}
+    </Select>
+
+    <Select
+      value={filterType}
+      onChange={e =>
+        setFilterType(
+          e.target.value
+        )
+      }
+      style={{ width: 140 }}
+    >
+      <option value="">
+        Усі типи
+      </option>
+
+      {TYPES.map(t => (
+        <option
+          key={t}
+          value={t}
+        >
+          {t}
+        </option>
+      ))}
+    </Select>
+
+    {(filterStatus ||
+      filterType) && (
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => {
+          setFilterStatus('');
+          setFilterType('');
         }}
       >
-        <div
-          style={{
-            display: 'flex',
-            gap: 12,
-            alignItems: 'center',
-            flexWrap: 'wrap',
-          }}
-        >
-          <span
-            style={{
-              fontSize: 12,
-              color:
-                'var(--text-muted)',
+        ✕ Очистити
+      </Button>
+    )}
 
-              fontFamily:
-                'var(--font-mono)',
-            }}
-          >
-            ФІЛЬТР:
-          </span>
-
-          <Select
-            value={filterStatus}
-            onChange={e =>
-              setFilterStatus(
-                e.target.value
-              )
-            }
-            style={{ width: 140 }}
-          >
-            <option value="">
-              Усі статуси
-            </option>
-
-            {STATUSES.map(s => (
-              <option
-                key={s}
-                value={s}
-              >
-                {s}
-              </option>
-            ))}
-          </Select>
-
-          <Select
-            value={filterType}
-            onChange={e =>
-              setFilterType(
-                e.target.value
-              )
-            }
-            style={{ width: 140 }}
-          >
-            <option value="">
-              Усі типи
-            </option>
-
-            {TYPES.map(t => (
-              <option
-                key={t}
-                value={t}
-              >
-                {t}
-              </option>
-            ))}
-          </Select>
-
-          {(filterStatus ||
-            filterType) && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                setFilterStatus('');
-                setFilterType('');
-              }}
-            >
-              ✕ Очистити
-            </Button>
-          )}
-
-          {/* Статистика */}
-          <div
-            style={{
-              marginLeft: 'auto',
-              display: 'flex',
-              gap: 12,
-            }}
-          >
+    {/* Статистика */}
+          <div className={css.stats}>
             {STATUSES.map(s => (
               <div
                 key={s}
-                style={{
-                  display: 'flex',
-                  alignItems:
-                    'center',
-
-                  gap: 5,
-                }}
+                className={css.statItem}
               >
                 <StatusBadge
                   status={s}
                 />
 
-                <span
-                  style={{
-                    fontSize: 11,
-                    color:
-                      'var(--text-muted)',
-                  }}
-                >
+                <span className={css.statCount}>
                   {
                     resources.filter(
                       r =>
@@ -589,171 +488,150 @@ export default function ResourcesPage() {
         </div>
       </Card>
 
-      <Card
-        style={{
-          padding: 0,
-        }}
-      >
-        {loading ? (
-          <Loader />
-        ) : (
-          <Table
-            columns={columns}
-            data={resources}
-            emptyMsg="Ресурси не знайдено"
-          />
-        )}
-      </Card>
+            <Card
+              style={{
+                padding: 0,
+              }}
+            >
+              {loading ? (
+                <Loader />
+              ) : (
+                <Table
+                  columns={columns}
+                  data={resources}
+                  emptyMsg="Ресурси не знайдено"
+                />
+              )}
+            </Card>
 
-      {/* Модальне вікно */}
-      <Modal
-        open={modalOpen}
-        onClose={() =>
-          setModalOpen(false)
-        }
-        title={
-          editTarget
-            ? 'Редагування ресурсу'
-            : 'Новий ресурс'
-        }
-      >
-        <form
-          onSubmit={handleSave}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 16,
-          }}
-        >
-          <FormField label="НАЗВА *">
-            <Input
-              required
-              value={form.name}
-              onChange={e =>
-                setForm(p => ({
-                  ...p,
-                  name:
-                    e.target.value,
-                }))
-              }
-              placeholder="prod-web-server-01"
-            />
-          </FormField>
-
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns:
-                '1fr 1fr',
-
-              gap: 12,
-            }}
-          >
-            <FormField label="ТИП *">
-              <Select
-                value={form.type}
-                onChange={e =>
-                  setForm(p => ({
-                    ...p,
-                    type:
-                      e.target.value,
-                  }))
-                }
-              >
-                {TYPES.map(t => (
-                  <option
-                    key={t}
-                    value={t}
-                  >
-                    {t}
-                  </option>
-                ))}
-              </Select>
-            </FormField>
-
-            <FormField label="СТАТУС">
-              <Select
-                value={form.status}
-                onChange={e =>
-                  setForm(p => ({
-                    ...p,
-                    status:
-                      e.target.value,
-                  }))
-                }
-              >
-                {STATUSES.map(s => (
-                  <option
-                    key={s}
-                    value={s}
-                  >
-                    {s}
-                  </option>
-                ))}
-              </Select>
-            </FormField>
-          </div>
-
-          <FormField label="РЕГІОН">
-            <Input
-              value={form.region}
-              onChange={e =>
-                setForm(p => ({
-                  ...p,
-                  region:
-                    e.target.value,
-                }))
-              }
-              placeholder="us-east-1"
-            />
-          </FormField>
-
-          <FormField label="ОПИС">
-            <Input
-              value={form.description}
-              onChange={e =>
-                setForm(p => ({
-                  ...p,
-                  description:
-                    e.target.value,
-                }))
-              }
-              placeholder="Короткий опис..."
-            />
-          </FormField>
-
-          <div
-            style={{
-              display: 'flex',
-              justifyContent:
-                'flex-end',
-
-              gap: 10,
-              marginTop: 4,
-            }}
-          >
-            <Button
-              variant="secondary"
-              onClick={() =>
+            {/* Модальне вікно */}
+            <Modal
+              open={modalOpen}
+              onClose={() =>
                 setModalOpen(false)
               }
-              type="button"
+              title={
+                editTarget
+                  ? 'Редагування ресурсу'
+                  : 'Новий ресурс'
+              }
             >
-              Скасувати
-            </Button>
+            <form
+        onSubmit={handleSave}
+        className={css.modalForm}
+      >
+        <FormField label="НАЗВА *">
+          <Input
+            required
+            value={form.name}
+            onChange={e =>
+              setForm(p => ({
+                ...p,
+                name:
+                  e.target.value,
+              }))
+            }
+            placeholder="prod-web-server-01"
+          />
+        </FormField>
 
-            <Button
-              type="submit"
-              disabled={saving}
+        <div className={css.modalGrid}>
+          <FormField label="ТИП *">
+            <Select
+              value={form.type}
+              onChange={e =>
+                setForm(p => ({
+                  ...p,
+                  type:
+                    e.target.value,
+                }))
+              }
             >
-              {saving
-                ? 'Збереження...'
-                : editTarget
-                ? 'Зберегти зміни'
-                : 'Створити'}
-            </Button>
-          </div>
-        </form>
+              {TYPES.map(t => (
+                <option
+                  key={t}
+                  value={t}
+                >
+                  {t}
+                </option>
+              ))}
+            </Select>
+          </FormField>
+
+          <FormField label="СТАТУС">
+            <Select
+              value={form.status}
+              onChange={e =>
+                setForm(p => ({
+                  ...p,
+                  status:
+                    e.target.value,
+                }))
+              }
+            >
+              {STATUSES.map(s => (
+                <option
+                  key={s}
+                  value={s}
+                >
+                  {s}
+                </option>
+              ))}
+            </Select>
+          </FormField>
+        </div>
+
+        <FormField label="РЕГІОН">
+          <Input
+            value={form.region}
+            onChange={e =>
+              setForm(p => ({
+                ...p,
+                region:
+                  e.target.value,
+              }))
+            }
+            placeholder="us-east-1"
+          />
+        </FormField>
+
+        <FormField label="ОПИС">
+          <Input
+            value={form.description}
+            onChange={e =>
+              setForm(p => ({
+                ...p,
+                description:
+                  e.target.value,
+              }))
+            }
+            placeholder="Короткий опис..."
+          />
+        </FormField>
+
+        <div className={css.modalActions}>
+          <Button
+            variant="secondary"
+            onClick={() =>
+              setModalOpen(false)
+            }
+            type="button"
+          >
+            Скасувати
+          </Button>
+
+          <Button
+            type="submit"
+            disabled={saving}
+          >
+            {saving
+              ? 'Збереження...'
+              : editTarget
+              ? 'Зберегти зміни'
+              : 'Створити'}
+          </Button>
+        </div>
+      </form>
       </Modal>
     </div>
   );

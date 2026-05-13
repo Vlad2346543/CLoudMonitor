@@ -4,11 +4,11 @@ import { useAuth } from '../context/AuthContext';
 import styles from './Layout.module.css';
 
 const NAV_ITEMS = [
-  { path: '/dashboard', label: 'Dashboard', icon: '▦', roles: ['ADMIN','USER','VIEWER'] },
-  { path: '/resources', label: 'Resources', icon: '◈', roles: ['ADMIN','USER','VIEWER'] },
-  { path: '/access', label: 'Access Control', icon: '⊕', roles: ['ADMIN'] },
-  { path: '/users', label: 'Users', icon: '◉', roles: ['ADMIN'] },
-  { path: '/logs', label: 'Audit Logs', icon: '≡', roles: ['ADMIN'] },
+  { path: '/dashboard', label: 'Панель керування',  roles: ['ADMIN','USER','VIEWER'] },
+  { path: '/resources', label: 'Ресурси', roles: ['ADMIN','USER','VIEWER'] },
+  { path: '/access', label: 'Керування доступом',  roles: ['ADMIN'] },
+  { path: '/users', label: 'Користувачі',  roles: ['ADMIN'] },
+  { path: '/logs', label: 'Журнал аудиту',  roles: ['ADMIN'] },
 ];
 
 export default function Layout() {
@@ -54,7 +54,7 @@ export default function Layout() {
           </div>
           <button className={styles.logoutBtn} onClick={handleLogout} title="Logout">
             <span>⏏</span>
-            {!collapsed && <span>Logout</span>}
+            {!collapsed && <span>Вийти</span>}
           </button>
         </div>
       </aside>
@@ -66,7 +66,7 @@ export default function Layout() {
           </button>
           <div className={styles.topbarRight}>
             <span className={styles.statusDot} />
-            <span className={styles.statusText}>System Online</span>
+            <span className={styles.statusText}>Система онлайн</span>
           </div>
         </header>
         <div className={styles.content}>

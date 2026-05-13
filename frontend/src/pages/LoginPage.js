@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import css from './LoginPage.module.css';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -34,131 +35,39 @@ export default function LoginPage() {
     }
   };
 
-  const inputStyle = {
-    width: '100%',
-    padding: '11px 14px',
-    background: '#0f172a',
-    border: '1px solid #1e2d45',
-    borderRadius: 8,
-    color: '#e2e8f0',
-    fontSize: 14,
-    fontFamily: 'DM Sans, sans-serif',
-    outline: 'none',
-    transition: 'border-color 0.15s',
-  };
-
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background:
-          'radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.06) 0%, transparent 60%), #0a0f1e',
-        padding: 16,
-      }}
-    >
+    <div className={css.page}>
       {/* Фонова сітка */}
-      <div
-        style={{
-          position: 'fixed',
-          inset: 0,
-          opacity: 0.03,
-          backgroundImage:
-            'linear-gradient(#3b82f6 1px, transparent 1px), linear-gradient(90deg, #3b82f6 1px, transparent 1px)',
-          backgroundSize: '40px 40px',
-          pointerEvents: 'none',
-        }}
-      />
+      <div className={css.backgroundGrid} />
 
-      <div
-        style={{
-          width: '100%',
-          maxWidth: 420,
-          position: 'relative',
-          background: '#141d2e',
-          border: '1px solid #1e2d45',
-          borderRadius: 14,
-          padding: '40px 36px',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
-        }}
-      >
+      <div className={css.loginCard}>
         {/* Логотип */}
-        <div
-          style={{
-            textAlign: 'center',
-            marginBottom: 32,
-          }}
-        >
-          <div
-            style={{
-              fontSize: 36,
-              marginBottom: 8,
-              filter: 'drop-shadow(0 0 12px #3b82f6)',
-            }}
-          >
+        <div className={css.logoBlock}>
+          <div className={css.logoIcon}>
             ⬡
           </div>
 
-          <h1
-            style={{
-              fontFamily: 'Space Mono, monospace',
-              fontSize: 20,
-              fontWeight: 700,
-              letterSpacing: '0.04em',
-              color: '#e2e8f0',
-            }}
-          >
+          <h1 className={css.logoTitle}>
             CloudGuard
           </h1>
 
-          <p
-            style={{
-              fontSize: 13,
-              color: '#64748b',
-              marginTop: 4,
-            }}
-          >
+          <p className={css.logoSubtitle}>
             Керування хмарними ресурсами
           </p>
         </div>
 
         {error && (
-          <div
-            style={{
-              padding: '10px 14px',
-              background: 'rgba(239,68,68,0.1)',
-              border: '1px solid rgba(239,68,68,0.3)',
-              borderRadius: 8,
-              color: '#ef4444',
-              fontSize: 13,
-              marginBottom: 20,
-            }}
-          >
+          <div className={css.errorBox}>
             {error}
           </div>
         )}
 
         <form
           onSubmit={handleSubmit}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 16,
-          }}
+          className={css.form}
         >
           <div>
-            <label
-              style={{
-                display: 'block',
-                fontSize: 11,
-                fontWeight: 600,
-                color: '#94a3b8',
-                marginBottom: 6,
-                letterSpacing: '0.05em',
-              }}
-            >
+            <label className={css.label}>
               EMAIL
             </label>
 
@@ -173,27 +82,12 @@ export default function LoginPage() {
                   email: e.target.value,
                 }))
               }
-              style={inputStyle}
-              onFocus={e =>
-                (e.target.style.borderColor = '#3b82f6')
-              }
-              onBlur={e =>
-                (e.target.style.borderColor = '#1e2d45')
-              }
+              className={css.input}
             />
           </div>
 
           <div>
-            <label
-              style={{
-                display: 'block',
-                fontSize: 11,
-                fontWeight: 600,
-                color: '#94a3b8',
-                marginBottom: 6,
-                letterSpacing: '0.05em',
-              }}
-            >
+            <label className={css.label}>
               ПАРОЛЬ
             </label>
 
@@ -208,43 +102,14 @@ export default function LoginPage() {
                   password: e.target.value,
                 }))
               }
-              style={inputStyle}
-              onFocus={e =>
-                (e.target.style.borderColor = '#3b82f6')
-              }
-              onBlur={e =>
-                (e.target.style.borderColor = '#1e2d45')
-              }
+              className={css.input}
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            style={{
-              marginTop: 4,
-              padding: '12px',
-              background: '#3b82f6',
-              color: '#fff',
-              border: 'none',
-              borderRadius: 8,
-              fontSize: 14,
-              fontWeight: 600,
-              cursor: loading
-                ? 'not-allowed'
-                : 'pointer',
-              opacity: loading ? 0.7 : 1,
-              fontFamily: 'DM Sans, sans-serif',
-              transition: 'all 0.15s',
-            }}
-            onMouseEnter={e => {
-              if (!loading) {
-                e.target.style.background = '#2563eb';
-              }
-            }}
-            onMouseLeave={e => {
-              e.target.style.background = '#3b82f6';
-            }}
+            className={css.submitButton}
           >
             {loading
               ? 'Вхід у систему...'
@@ -253,23 +118,8 @@ export default function LoginPage() {
         </form>
 
         {/* Демонстраційні акаунти */}
-        <div
-          style={{
-            marginTop: 24,
-            padding: '14px',
-            background: '#0f172a',
-            borderRadius: 8,
-            border: '1px solid #1e2d45',
-          }}
-        >
-          <p
-            style={{
-              fontSize: 11,
-              color: '#64748b',
-              fontFamily: 'Space Mono, monospace',
-              marginBottom: 8,
-            }}
-          >
+        <div className={css.demoAccounts}>
+          <p className={css.demoTitle}>
             ДЕМОНСТРАЦІЙНІ ДАНІ
           </p>
 
@@ -288,27 +138,11 @@ export default function LoginPage() {
           ].map(c => (
             <div
               key={c.label}
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: 4,
-              }}
+              className={css.demoItem}
             >
-              <span
-                style={{
-                  fontSize: 11,
-                  color: '#475569',
-                }}
-              >
+              <span className={css.demoText}>
                 {c.label}:{' '}
-                <span
-                  style={{
-                    color: '#94a3b8',
-                    fontFamily: 'Space Mono',
-                    fontSize: 10,
-                  }}
-                >
+                <span className={css.demoEmail}>
                   {c.email}
                 </span>
               </span>
@@ -320,16 +154,7 @@ export default function LoginPage() {
                     password: c.pass,
                   })
                 }
-                style={{
-                  fontSize: 10,
-                  padding: '2px 7px',
-                  background: 'transparent',
-                  border: '1px solid #1e2d45',
-                  borderRadius: 4,
-                  color: '#3b82f6',
-                  cursor: 'pointer',
-                  fontFamily: 'DM Sans',
-                }}
+                className={css.demoButton}
               >
                 Використати
               </button>
@@ -337,20 +162,11 @@ export default function LoginPage() {
           ))}
         </div>
 
-        <p
-          style={{
-            marginTop: 20,
-            textAlign: 'center',
-            fontSize: 13,
-            color: '#475569',
-          }}
-        >
+        <p className={css.registerText}>
           Немає акаунта?{' '}
           <Link
             to="/register"
-            style={{
-              color: '#60a5fa',
-            }}
+            className={css.registerLink}
           >
             Зареєструватися
           </Link>

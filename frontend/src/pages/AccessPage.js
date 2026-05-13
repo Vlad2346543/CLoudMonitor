@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { PageHeader, Button, Modal, FormField, Select, StatusBadge, Table, Loader, Alert, Card } from '../components/ui';
 import api from '../services/api';
-import styles from './AccessPage.module.css';
+import css from './AccessPage.module.css';
 
 const ACCESS_ROLES = ['OWNER', 'EDITOR', 'VIEWER'];
 
@@ -105,8 +105,8 @@ export default function AccessPage() {
       label: 'КОРИСТУВАЧ',
       render: (v) => (
         <div>
-          <div className={styles.userName}>{v?.name}</div>
-          <div className={styles.userEmail}>{v?.email}</div>
+          <div className={css.userName}>{v?.name}</div>
+          <div className={css.userEmail}>{v?.email}</div>
         </div>
       ),
     },
@@ -115,9 +115,9 @@ export default function AccessPage() {
       key: 'resource',
       label: 'РЕСУРС',
       render: (v) => (
-        <div className={styles.userInfo}>
-          <span className={styles.userName2}>{v?.name}</span>
-          <span className={styles.userType}>{v?.type}</span>
+        <div className={css.userInfo}>
+          <span className={css.userName2}>{v?.name}</span>
+          <span className={css.userType}>{v?.type}</span>
           <StatusBadge status={v?.status} />
         </div>
       ),
@@ -133,7 +133,7 @@ export default function AccessPage() {
       key: 'grantedAt',
       label: 'НАДАНО',
       render: v => (
-        <span className={styles.grantedAt}>
+        <span className={css.grantedAt}>
           {new Date(v).toLocaleString()}
         </span>
       ),
@@ -155,7 +155,7 @@ export default function AccessPage() {
             )
           }
         >
-          Скасувати
+        Скасувати
         </Button>
       ),
     },
@@ -206,270 +206,187 @@ export default function AccessPage() {
 
       {/* Картки ресурсів */}
       {byResource.length > 0 && (
+    <div className={css.resourceGrid}>
+      {byResource.map(r => (
         <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns:
-              'repeat(auto-fill, minmax(200px, 1fr))',
-            gap: 12,
-            marginBottom: 24,
-          }}
+          key={r.id}
+          onClick={() =>
+            setFilterResource(
+              filterResource === r.id ? '' : r.id
+            )
+          }
+          className={`resourceCard ${
+            filterResource === r.id ? 'resourceCardActive' : ''
+          }`}
         >
-          {byResource.map(r => (
-            <div
-              key={r.id}
-              onClick={() =>
-                setFilterResource(
-                  filterResource === r.id ? '' : r.id
-                )
-              }
-              style={{
-                background:
-                  filterResource === r.id
-                    ? 'var(--accent-glow)'
-                    : 'var(--bg-card)',
-
-                border: `1px solid ${
-                  filterResource === r.id
-                    ? 'rgba(59,130,246,0.4)'
-                    : 'var(--border)'
-                }`,
-
-                borderRadius: 'var(--radius)',
-                padding: '14px 16px',
-                cursor: 'pointer',
-                transition: 'all 0.15s',
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'flex-start',
-                }}
-              >
-                <div>
-                  <div
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 600,
-                      marginBottom: 4,
-                    }}
-                  >
-                    {r.name}
-                  </div>
-
-                  <StatusBadge status={r.status} />
-                </div>
-
-                <div
-                  style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 22,
-                    fontWeight: 700,
-                    color: 'var(--accent)',
-                  }}
-                >
-                  {r.userCount}
-                </div>
+          <div className={css.resourceCardTop}>
+            <div>
+              <div className={css.resourceTitle}>
+                {r.name}
               </div>
 
-              <div
-                style={{
-                  fontSize: 11,
-                  color: 'var(--text-muted)',
-                  marginTop: 6,
-                }}
-              >
-                {r.userCount} користувач(ів) мають доступ
-              </div>
+              <StatusBadge status={r.status} />
             </div>
-          ))}
+
+            <div className={css.resourceCount}>
+              {r.userCount}
+            </div>
+          </div>
+
+          <div className={css.resourceInfo}>
+            {r.userCount} користувач(ів) мають доступ
+          </div>
         </div>
+      ))}
+    </div>
+  )}
+
+  {/* Панель фільтрації */}
+  <Card className={css.filterCard}>
+    <div className={css.filterBar}>
+      <span className={css.filterLabel}>
+        ФІЛЬТР ЗА РЕСУРСОМ:
+      </span>
+
+      <Select
+        value={filterResource}
+        onChange={e => setFilterResource(e.target.value)}
+        className={css.filterSelect}
+      >
+        <option value="">Усі ресурси</option>
+
+        {resources.map(r => (
+          <option key={r.id} value={r.id}>
+            {r.name}
+          </option>
+        ))}
+      </Select>
+
+      {filterResource && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setFilterResource('')}
+        >
+          ✕ Очистити
+        </Button>
       )}
 
-      {/* Панель фільтрації */}
-      <Card style={{ marginBottom: 16 }}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 12,
-          }}
-        >
-          <span
-            style={{
-              fontSize: 12,
-              color: 'var(--text-muted)',
-              fontFamily: 'var(--font-mono)',
-            }}
-          >
-            ФІЛЬТР ЗА РЕСУРСОМ:
-          </span>
-
-          <Select
-            value={filterResource}
-            onChange={e => setFilterResource(e.target.value)}
-            style={{ width: 220 }}
-          >
-            <option value="">Усі ресурси</option>
-
-            {resources.map(r => (
-              <option key={r.id} value={r.id}>
-                {r.name}
-              </option>
-            ))}
-          </Select>
-
-          {filterResource && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setFilterResource('')}
-            >
-              ✕ Очистити
-            </Button>
-          )}
-
-          <span
-            style={{
-              marginLeft: 'auto',
-              fontSize: 12,
-              color: 'var(--text-muted)',
-            }}
-          >
-            {filtered.length} записів
-          </span>
-        </div>
-      </Card>
-
-      <Card style={{ padding: 0 }}>
-        {loading ? (
-          <Loader />
-        ) : (
-          <Table
-            columns={columns}
-            data={filtered}
-            emptyMsg="Записи доступу не знайдено"
-          />
-        )}
-      </Card>
-
-      {/* Модальне вікно */}
-      <Modal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        title="Надати доступ до ресурсу"
-        width={440}
-      >
-        <form
-          onSubmit={handleGrant}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 16,
-          }}
-        >
-          <FormField label="КОРИСТУВАЧ">
-            <Select
-              value={form.userId}
-              onChange={e =>
-                setForm(p => ({
-                  ...p,
-                  userId: e.target.value,
-                }))
-              }
-            >
-              {users.map(u => (
-                <option key={u.id} value={u.id}>
-                  {u.name} ({u.email})
-                </option>
-              ))}
-            </Select>
-          </FormField>
-
-          <FormField label="РЕСУРС">
-            <Select
-              value={form.resourceId}
-              onChange={e =>
-                setForm(p => ({
-                  ...p,
-                  resourceId: e.target.value,
-                }))
-              }
-            >
-              {resources.map(r => (
-                <option key={r.id} value={r.id}>
-                  {r.name} [{r.type}]
-                </option>
-              ))}
-            </Select>
-          </FormField>
-
-          <FormField label="РОЛЬ ДОСТУПУ">
-            <Select
-              value={form.role}
-              onChange={e =>
-                setForm(p => ({
-                  ...p,
-                  role: e.target.value,
-                }))
-              }
-            >
-              {ACCESS_ROLES.map(r => (
-                <option key={r} value={r}>
-                  {r}
-                </option>
-              ))}
-            </Select>
-          </FormField>
-
-          <div
-            style={{
-              padding: '10px 14px',
-              background: 'var(--bg-secondary)',
-              borderRadius: 'var(--radius-sm)',
-              fontSize: 12,
-              color: 'var(--text-muted)',
-            }}
-          >
-            <strong style={{ color: 'var(--text-secondary)' }}>
-              Права ролей:
-            </strong>{' '}
-            OWNER (повний доступ), EDITOR (читання та редагування),
-            VIEWER (лише перегляд)
-          </div>
-
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              gap: 10,
-            }}
-          >
-            <Button
-              variant="secondary"
-              onClick={() => setModalOpen(false)}
-              type="button"
-            >
-              Скасувати
-            </Button>
-
-            <Button
-              type="submit"
-              disabled={
-                saving ||
-                !form.userId ||
-                !form.resourceId
-              }
-            >
-              {saving
-                ? 'Надання доступу...'
-                : 'Надати доступ'}
-            </Button>
-          </div>
-        </form>
-      </Modal>
+      <span className={css.filterCount}>
+        {filtered.length} записів
+      </span>
     </div>
+  </Card>
+
+  <Card className={css.tableCard}>
+    {loading ? (
+      <Loader />
+    ) : (
+      <Table
+        columns={columns}
+        data={filtered}
+        emptyMsg="Записи доступу не знайдено"
+      />
+    )}
+  </Card>
+
+  {/* Модальне вікно */}
+  <Modal
+    open={modalOpen}
+    onClose={() => setModalOpen(false)}
+    title="Надати доступ до ресурсу"
+    width={440}
+  >
+    <form
+      onSubmit={handleGrant}
+      className={css.grantForm}
+    >
+      <FormField label="КОРИСТУВАЧ">
+        <Select
+          value={form.userId}
+          onChange={e =>
+            setForm(p => ({
+              ...p,
+              userId: e.target.value,
+            }))
+          }
+        >
+          {users.map(u => (
+            <option key={u.id} value={u.id}>
+              {u.name} ({u.email})
+            </option>
+          ))}
+        </Select>
+      </FormField>
+
+      <FormField label="РЕСУРС">
+        <Select
+          value={form.resourceId}
+          onChange={e =>
+            setForm(p => ({
+              ...p,
+              resourceId: e.target.value,
+            }))
+          }
+        >
+          {resources.map(r => (
+            <option key={r.id} value={r.id}>
+              {r.name} [{r.type}]
+            </option>
+          ))}
+        </Select>
+      </FormField>
+
+      <FormField label="РОЛЬ ДОСТУПУ">
+        <Select
+          value={form.role}
+          onChange={e =>
+            setForm(p => ({
+              ...p,
+              role: e.target.value,
+            }))
+          }
+        >
+          {ACCESS_ROLES.map(r => (
+            <option key={r} value={r}>
+              {r}
+            </option>
+          ))}
+        </Select>
+      </FormField>
+
+      <div className={css.roleInfo}>
+        <strong className={css.roleInfoTitle}>
+          Права ролей:
+        </strong>{' '}
+        OWNER (повний доступ), EDITOR (читання та редагування),
+        VIEWER (лише перегляд)
+      </div>
+
+      <div className={css.modalActions}>
+        <Button
+          variant="secondary"
+          onClick={() => setModalOpen(false)}
+          type="button"
+        >
+          Скасувати
+        </Button>
+
+        <Button
+          type="submit"
+          disabled={
+            saving ||
+            !form.userId ||
+            !form.resourceId
+          }
+        >
+          {saving
+            ? 'Надання доступу...'
+            : 'Надати доступ'}
+        </Button>
+      </div>
+    </form>
+  </Modal>
+</div>
   );
 }
