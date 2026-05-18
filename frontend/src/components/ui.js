@@ -2,15 +2,15 @@ import React from 'react';
 import css from './ui.module.css';
 // ─── StatusBadge ────────────────────────────────────────────────────────────
 const statusColors = {
-  ONLINE: { bg: 'var(--green-dim)', color: 'var(--green)', dot: 'var(--green)' },
-  OFFLINE: { bg: 'var(--red-dim)', color: 'var(--red)', dot: 'var(--red)' },
-  MAINTENANCE: { bg: 'var(--yellow-dim)', color: 'var(--yellow)', dot: 'var(--yellow)' },
-  UNKNOWN: { bg: 'rgba(100,116,139,0.15)', color: '#64748b', dot: '#64748b' },
-  ADMIN: { bg: 'rgba(139,92,246,0.15)', color: '#a78bfa', dot: '#a78bfa' },
-  USER: { bg: 'var(--accent-glow)', color: 'var(--accent-light)', dot: 'var(--accent-light)' },
-  VIEWER: { bg: 'var(--green-dim)', color: '#34d399', dot: '#34d399' },
-  OWNER: { bg: 'rgba(139,92,246,0.15)', color: '#a78bfa', dot: '#a78bfa' },
-  EDITOR: { bg: 'var(--accent-glow)', color: 'var(--accent-light)', dot: 'var(--accent-light)' },
+  ONLINE: {  color: 'var(--green)', dot: 'var(--green)' },
+  OFFLINE: { color: 'var(--red)', dot: 'var(--red)' },
+  MAINTENANCE: { color: 'var(--yellow)', dot: 'var(--yellow)' },
+  UNKNOWN: {  color: '#64748b', dot: '#64748b' },
+  ADMIN: {  color: '#a78bfa', dot: '#a78bfa' },
+  USER: { color: 'var(--accent-light)', dot: 'var(--accent-light)' },
+  VIEWER: {  color: '#34d399', dot: '#34d399' },
+  OWNER: { color: '#a78bfa', dot: '#a78bfa' },
+  EDITOR: {  color: 'var(--accent-light)', dot: 'var(--accent-light)' },
 };
 
 export const StatusBadge = ({ status, pulse = false }) => {

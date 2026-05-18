@@ -3,15 +3,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
-  background:
-    radial-gradient(
-      ellipse at 80% 50%,
-      rgba(139,92,246,0.06) 0%,
-      transparent 60%
-    ),
-    #0a0f1e;
-
   padding: 16px;
 }
 
@@ -21,12 +12,8 @@
 
   background: #141d2e;
   border: 1px solid #1e2d45;
-
   border-radius: 14px;
   padding: 40px 36px;
-
-  box-shadow:
-    0 20px 60px rgba(0,0,0,0.5);
 }
 
 .header {

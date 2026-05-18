@@ -122,9 +122,9 @@
   width: fit-content;
 }
 
-.role_ADMIN { background: rgba(139,92,246,0.2); color: #a78bfa; }
-.role_USER { background: var(--accent-glow); color: var(--accent-light); }
-.role_VIEWER { background: var(--green-dim); color: #34d399; }
+.role_ADMIN {  color: #a78bfa; }
+.role_USER {  color: var(--accent-light); }
+.role_VIEWER { color: #34d399; }
 
 .logoutBtn {
   display: flex;

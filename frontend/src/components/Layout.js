@@ -8,7 +8,7 @@ const NAV_ITEMS = [
   { path: '/resources', label: 'Ресурси', roles: ['ADMIN','USER','VIEWER'] },
   { path: '/access', label: 'Керування доступом',  roles: ['ADMIN'] },
   { path: '/users', label: 'Користувачі',  roles: ['ADMIN'] },
-  { path: '/logs', label: 'Журнал аудиту',  roles: ['ADMIN'] },
+  
 ];
 
 export default function Layout() {

@@ -253,7 +253,9 @@ export default function AccessPage() {
         onChange={e => setFilterResource(e.target.value)}
         className={css.filterSelect}
       >
-        <option value="">Усі ресурси</option>
+        <option 
+        className={css.filterOption}
+        value="">Усі ресурси</option>
 
         {resources.map(r => (
           <option key={r.id} value={r.id}>

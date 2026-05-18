@@ -7,30 +7,66 @@
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| **Runtime** | Node.js 18+ |
-| **Backend Framework** | Express.js |
-| **Database** | PostgreSQL 14+ |
-| **ORM** | Prisma |
-| **Auth** | JWT + bcrypt |
-| **Frontend** | React 18 |
-| **HTTP Client** | Axios |
-| **Routing** | React Router v6 |
-| **Charts** | Recharts |
-| **API Docs** | Swagger / OpenAPI 3.0 |
+| Layer                 | Technology            |
+| --------------------- | --------------------- |
+| Layer                 | Technology            |
+| --------------------- | --------------------- |
+| **Runtime**           | Node.js 18+           |
+| **Backend Framework** | Express.js            |
+| **Database**          | PostgreSQL 14+        |
+| **ORM**               | Prisma                |
+| **Authentication**    | JWT + bcrypt          |
+| **Frontend**          | React 18              |
+| **HTTP Client**       | Axios                 |
+| **Routing**           | React Router v6       |
+| **Charts**            | Recharts              |
+| **Monitoring**        | systeminformation     |
+| **API Documentation** | Swagger / OpenAPI 3.0 |
+| **Deployment**        | Render + Vercel       |
 
 ---
 
 ## Features
 
 ### Authentication & Authorization
-- JWT-based login and registration
-- Password hashing with bcrypt
-- Role-based access control: **ADMIN**, **USER**, **VIEWER**
-- Protected routes on both frontend and backend
+
+JWT-based login and registration
+Password hashing using bcrypt
+Role-based access control (ADMIN, USER, VIEWER)
+Protected frontend and backend routes
+Persistent authentication using localStorage
+Swagger Bearer Token authentication support
+
+### Real-Time Monitoring System
+
+System Monitoring Dashboard
+
+Real-time CPU monitoring
+Real-time RAM monitoring
+Disk usage monitoring
+Network activity monitoring
+Live utilization history chart
+Automatic polling every 15 seconds
+Manual refresh support
+Real Telemetry Integration
+
+The monitoring subsystem uses the Node.js package:
+
+npm install systeminformation
+
+to obtain real telemetry from the operating system.
+Implemented metrics:
+
+CPU load
+RAM usage
+Disk usage
+Network statistics
+Live resource telemetry
+
+The system retrieves real hardware statistics instead of mock data.
 
 ### Dashboard
+
 - Real-time system metrics (CPU, RAM, Disk, Network)
 - Resource status overview (online / offline / maintenance counts)
 - Live area chart with 20-minute utilization history
@@ -38,25 +74,29 @@
 - Auto-polling every 15 seconds + manual refresh
 
 ### Cloud Resources
+
 - Full CRUD: create, view, update, delete resources
 - Resource types: EC2, S3, RDS, Lambda, ECS, EKS, CloudFront, VPC, Other
 - Status indicators with animated live badges
 - Filter by status and type
 - Access count per resource
 
-### User Management *(Admin only)*
+### User Management _(Admin only)_
+
 - View all users with role badges
 - Change user roles via dropdown modal
 - Delete users (with self-deletion guard)
 - Role distribution summary cards
 
-### Access Control *(Admin only)*
+### Access Control _(Admin only)_
+
 - Grant access to users per resource (OWNER / EDITOR / VIEWER roles)
 - Revoke access
 - Filter access records by resource
 - Resource access summary cards (clickable to filter)
 
-### Audit Logs *(Admin only)*
+### Audit Logs _(Admin only)_
+
 - All user actions are logged: login, register, CRUD, access changes
 - Filterable by action type
 - Clickable action badges to filter
@@ -64,6 +104,7 @@
 - Auto-refresh / live mode toggle
 
 ### API Documentation
+
 - Swagger UI at `http://localhost:5000/api/docs`
 - All endpoints documented with request/response schemas
 - Bearer token auth support in Swagger UI
@@ -219,34 +260,34 @@ Frontend runs at: `http://localhost:3000`
 
 After seeding, use these accounts:
 
-| Role | Email | Password |
-|---|---|---|
-| **Admin** | admin@cloudguard.io | admin123 |
-| **User** | alice@cloudguard.io | user123 |
-| **Viewer** | bob@cloudguard.io | user123 |
+| Role       | Email               | Password |
+| ---------- | ------------------- | -------- |
+| **Admin**  | admin@cloudguard.io | admin123 |
+| **User**   | alice@cloudguard.io | user123  |
+| **Viewer** | bob@cloudguard.io   | user123  |
 
 ---
 
 ## API Endpoints
 
-| Method | Path | Auth | Description |
-|---|---|---|---|
-| POST | `/api/auth/register` | Public | Register user |
-| POST | `/api/auth/login` | Public | Login, get JWT |
-| GET | `/api/auth/me` | Any | Current user |
-| GET | `/api/resources` | Any | List resources |
-| POST | `/api/resources` | Admin/User | Create resource |
-| PUT | `/api/resources/:id` | Admin/User | Update resource |
-| DELETE | `/api/resources/:id` | Admin | Delete resource |
-| GET | `/api/users` | Admin | List all users |
-| PATCH | `/api/users/:id/role` | Admin | Change user role |
-| DELETE | `/api/users/:id` | Admin | Delete user |
-| GET | `/api/access` | Admin | All access records |
-| POST | `/api/access/grant` | Admin | Grant access |
-| POST | `/api/access/revoke` | Admin | Revoke access |
-| GET | `/api/logs` | Admin | Audit log entries |
-| GET | `/api/monitor/overview` | Any | System overview stats |
-| GET | `/api/monitor/metrics` | Any | Live resource metrics |
+| Method | Path                    | Auth       | Description           |
+| ------ | ----------------------- | ---------- | --------------------- |
+| POST   | `/api/auth/register`    | Public     | Register user         |
+| POST   | `/api/auth/login`       | Public     | Login, get JWT        |
+| GET    | `/api/auth/me`          | Any        | Current user          |
+| GET    | `/api/resources`        | Any        | List resources        |
+| POST   | `/api/resources`        | Admin/User | Create resource       |
+| PUT    | `/api/resources/:id`    | Admin/User | Update resource       |
+| DELETE | `/api/resources/:id`    | Admin      | Delete resource       |
+| GET    | `/api/users`            | Admin      | List all users        |
+| PATCH  | `/api/users/:id/role`   | Admin      | Change user role      |
+| DELETE | `/api/users/:id`        | Admin      | Delete user           |
+| GET    | `/api/access`           | Admin      | All access records    |
+| POST   | `/api/access/grant`     | Admin      | Grant access          |
+| POST   | `/api/access/revoke`    | Admin      | Revoke access         |
+| GET    | `/api/logs`             | Admin      | Audit log entries     |
+| GET    | `/api/monitor/overview` | Any        | System overview stats |
+| GET    | `/api/monitor/metrics`  | Any        | Live resource metrics |
 
 Full interactive docs at `/api/docs`.
 
@@ -254,14 +295,14 @@ Full interactive docs at `/api/docs`.
 
 ## Environment Variables
 
-| Variable | Description | Default |
-|---|---|---|
-| `DATABASE_URL` | PostgreSQL connection string | — |
-| `JWT_SECRET` | Secret for signing JWTs | — |
-| `JWT_EXPIRES_IN` | Token expiry duration | `24h` |
-| `PORT` | Backend port | `5000` |
-| `NODE_ENV` | Environment | `development` |
-| `FRONTEND_URL` | CORS allowed origin | `http://localhost:3000` |
+| Variable         | Description                  | Default                 |
+| ---------------- | ---------------------------- | ----------------------- |
+| `DATABASE_URL`   | PostgreSQL connection string | —                       |
+| `JWT_SECRET`     | Secret for signing JWTs      | —                       |
+| `JWT_EXPIRES_IN` | Token expiry duration        | `24h`                   |
+| `PORT`           | Backend port                 | `5000`                  |
+| `NODE_ENV`       | Environment                  | `development`           |
+| `FRONTEND_URL`   | CORS allowed origin          | `http://localhost:3000` |
 
 ---
 
@@ -287,4 +328,4 @@ Full interactive docs at `/api/docs`.
 
 ---
 
-*Built with React, Express, PostgreSQL, and Prisma · CloudGuard v1.0.0*
+_Built with React, Express, PostgreSQL, and Prisma · CloudGuard v1.0.0_

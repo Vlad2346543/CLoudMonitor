@@ -10,7 +10,6 @@
   font-weight: 700;
   letter-spacing: 0.05em;
 
-  font-family: var(--font-mono);
 }
 
 .statusDot {
@@ -330,10 +329,9 @@
 .card {
   background: var(--bg-card);
   border: 1px solid var(--border);
-
   border-radius: var(--radius);
-
   padding: 22px;
+  margin-bottom: 16px;
 }
 
 .alert {

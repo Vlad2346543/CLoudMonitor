@@ -1,7 +1,7 @@
 :root {
   --bg-primary: #070b14;
-  /* --bg-secondary: #18182E; */
-  /* --bg-card: #141d2e; */
+  --bg-secondary: #18182E;
+  --bg-card: #141d2e;
   --bg-card-hover: #1a2540;
   --border: #1e2d45;
   --border-light: #243352;
@@ -10,13 +10,13 @@
   --text-muted: #4a5568;
   --accent: #3b82f6;
   --accent-light: #60a5fa;
-  --accent-glow: rgba(59,130,246,0.15);
+  /* --accent-glow: rgba(59,130,246,0.15); */
   --green: #10b981;
-  --green-dim: rgba(16,185,129,0.12);
+ /* --green-dim: rgba(16,185,129,0.12); */
   --red: #ef4444;
-  --red-dim: rgba(239,68,68,0.12);
+  /* --red-dim: rgba(239,68,68,0.12); */
   --yellow: #f59e0b;
-  --yellow-dim: rgba(245,158,11,0.12);
+  /* --yellow-dim: rgba(245,158,11,0.12); */
   --purple: #8b5cf6;
   --white: #FFFFFF;
   --cyan: #06b6d4;
@@ -46,4 +46,4 @@ body {
 
 a { color: var(--accent-light); text-decoration: none; }
 
-.mono { font-family: var(--font-mono); }
+.mono {}
